@@ -2,10 +2,10 @@ TARGET = test
 
 CXX = g++
 
-INCLUDE_PATHS = -IC:\Users\danie\Documents\projects\AbyssEngine\AbyssEngine\header \
+INCLUDE_PATHS = -IC:\Users\danie\Documents\projects\git\AbyssEngine\header \
 	-IC:\Things\libs\include
 
-LIBRARY_PATHS = -LC:\Things\libs\lib\Abyss \
+LIBRARY_PATHS = -LC:\Things\libs\lib\box2d \
 	-LC:\Things\libs\lib\SFML
 	
 CXXFLAGS = -Wall
@@ -23,7 +23,7 @@ LINKER = g++
 
 LFLAGS = $(COMMON) \
 	-lmingw32 \
-	-labyssmath \
+	-lbox2d \
 	-lsfml-graphics \
 	-lsfml-window \
 	-lsfml-system \

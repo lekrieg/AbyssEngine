@@ -14,9 +14,9 @@ int main()
     //EntityManager entityManager;
     //auto e = entityManager.addEntity("Circle");
 
-    //abyss::math::Vector2 test1(3, 3);
+    //glm::vec2 test1(3, 3);
     //std::cout << "Valores iniciais: " << test1;
-    //abyss::math::Vector2 test2(4, 4);
+    //glm::vec2 test2(4, 4);
     //std::cout << "Valores iniciais: " << test2;
 
     //test1 += test2;
@@ -66,7 +66,7 @@ int main()
     //        }
     //    }
 
-    //    shape.setPosition(shape.getPosition() + sf::abyss::math::Vector2f(circleMoveSpeed, circleMoveSpeed));
+    //    shape.setPosition(shape.getPosition() + sf::glm::vec2f(circleMoveSpeed, circleMoveSpeed));
 
     //    window.clear();
     //    window.draw(shape);

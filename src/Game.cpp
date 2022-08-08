@@ -1,10 +1,11 @@
 #include "Game.h"
-#include "Abyss/vector2.h"
+#include "glm/ext/vector_float2.hpp"
 #include "EntityManager.h"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/Text.hpp"
 
+#include <iostream>
 #include <fstream>
 
 Game::Game(const std::string& config)
@@ -44,6 +45,12 @@ void Game::init(const std::string& config)
 	}
 
 	_running = true;
+
+	if(!_font.loadFromFile(fontConfig.n))
+	{
+		std::cerr << "Could not load font!\n";
+		exit(-1);
+	}
 
 	_window.create(sf::VideoMode(windowConfig.w, windowConfig.h), windowConfig.n);
 	_window.setFramerateLimit(60);
@@ -116,9 +123,10 @@ void Game::renderSystem()
 	for (auto e : _entityManager.getEntities())
 	{
 		e->shape->shape.setPosition(e->transform->pos.x, e->transform->pos.y);
-		// e->text->text.setPosition(e->transform->pos.x, e->transform->pos.y);
-		// _window.draw(e->text->text);
+		e->text->text.setPosition(e->transform->pos.x, e->transform->pos.y);
+
 		_window.draw(e->shape->shape);
+		_window.draw(e->text->text);
 	}
 	// set the position of the shape based on the transform->pos
 	// set the rotation(mayber) based on the transform->angle
@@ -132,33 +140,28 @@ void Game::collisionSystem()
 	// use collision radius no shape radius
 	for(auto e : _entityManager.getEntities())
 	{
-		if(e->transform->pos.x < 0 || e->transform->pos.y < 0 || e->transform->pos.x > windowConfig.w || e->transform->pos.y > windowConfig.h)
+		if(e->shape->shape.getPosition().x < 0
+		|| e->shape->shape.getPosition().y < 0
+		|| e->shape->shape.getPosition().x > windowConfig.w
+		|| e->shape->shape.getPosition().y > windowConfig.h)
 		{
-			e->transform->velocity = abyss::math::reflection(e->transform->velocity, e->transform->velocity.Normalized());
+			// e->transform->velocity = abyss::math::reflection(e->transform->velocity, e->transform->pos.Normalized());
+			e->transform->velocity *= -1;
 		}
 	}
 }
 
 void Game::objectSpawnerSystem()
 {
-	sf::Font textFont;
-	if(!textFont.loadFromFile("config/fonts/sylfaen.ttf"))
-	{
-		std::cerr << "Could not load font!\n";
-		exit(-1);
-	}
-	
 	for(auto circle : circleConfigs)
 	{
 		auto e = _entityManager.addEntity("circle");
 		e->shape = std::make_shared<Shape>(sf::CircleShape(circle.radius, circle.pc));
 		e->shape->shape.setFillColor(sf::Color(circle.r, circle.g, circle.b));
 		// TODO: modificar isso pra uma velocidade X sei la
-		e->transform = std::make_shared<Transform>(abyss::math::Vector2(circle.x, circle.y), abyss::math::Vector2(circle.sx, circle.sy), abyss::math::Vector2(0, 0));
-		// sf::Text text("Aleatorius text!", textFont,  fontConfig.s);
-		// text.setPosition(200, 100);
-		// text.setFillColor(sf::Color(fontConfig.r, fontConfig.g, fontConfig.b));
-		// e->text = std::make_shared<Text>(sf::Text("Aleatorius text!", textFont,  fontConfig.s));
+		e->transform = std::make_shared<Transform>(glm::vec2(circle.x, circle.y), glm::vec2(circle.sx, circle.sy), glm::vec2(0, 0));
+		e->text = std::make_shared<Text>(sf::Text(circle.n, _font,  fontConfig.s));
+		e->text->text.setFillColor(sf::Color(fontConfig.r, fontConfig.g, fontConfig.b));
 	}
 }
 
